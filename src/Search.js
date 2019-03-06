@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios'
+import {Grid, Form, Button} from 'semantic-ui-react'
 
 
 function Item(props){ 
@@ -64,20 +65,25 @@ class Search extends Component {
 
 	render(){
 		return(
-			<div className='page'>
-				<h1 className='title'>Search for your favorite restaurant!</h1>
-				<form>
-			       <input
-			         placeholder="Restaurant name..."
-			         onChange={this.inputChangeHandler}
-			         value={this.state.query}
-			       />
-			      
-			     </form>
-			     <button onClick={this.onClickHandler}>Search</button>
-			     <Item item={this.state.item}/>
-			</div>
-
+			<div className='search'>
+    <style>{`
+      body > div,
+      body > div > div,
+      body > div > div > div.search {
+        height: 100%;
+      }
+    `}</style>
+    <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
+      <Grid.Column style={{ maxWidth: 450 }}>
+      <h1 className='title'>Search for your favorite restaurant!</h1>
+		<Form onSubmit={this.onClickHandler}>      
+			<Form.Input placeholder="Restaurant name..." value={this.state.query} onChange={this.inputChangeHandler} />
+			<Form.Button content='Search'/>   
+		</Form>	      
+		<Item item={this.state.item}/>
+      </Grid.Column>
+      </Grid>
+      </div>
 
 		)
 	}
