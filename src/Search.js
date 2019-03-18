@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios'
-import {Grid, Form, Button} from 'semantic-ui-react'
+import {Grid, Form, Button, Container} from 'semantic-ui-react'
 
 
 function Item(props){ 
@@ -31,6 +31,15 @@ function Item(props){
 	}
 }
 
+function Suggestions(props){
+  const options = props.results.map(r => (
+    <li key={r.id}>
+      {r.name}
+    </li>
+  ))
+  return (<ul>{options}</ul>)
+}
+
 class Search extends Component {
 	constructor(){
 		super();
@@ -38,6 +47,7 @@ class Search extends Component {
 		this.state = {
 			query: '',
 			item: {},
+			results: [],
 		};
 
 		this.baseUrl = 'http://localhost:5000/api/restaurant/';
@@ -46,12 +56,36 @@ class Search extends Component {
 	}
 
 	inputChangeHandler(event) {
-		this.setState({ query: event.target.value })
+		this.setState({ query: event.target.value}, 
+			() => {
+				if (this.state.query.length %3 == 0 && this.state.query.length > 2){
+					this.getInfo(this.state.query)
+				}
+				else if (this.state.query.length == 0){
+					this.setState({
+							results: []
+						}, ()=>{console.log("query is empty, change results", this.state.results)})
+				}
+			}
+		)
 	}
+
+	getInfo(q) {
+			let url = `${this.baseUrl}${q}`;
+
+			axios.get(url).then((response) => {
+				this.setState({
+					results: response.data
+				}, console.log("in getinfo",q,response.data));
+				
+			}).catch((error) => {
+				console.log(error);
+			});
+	}
+
 
 	onClickHandler() {
 		let url = `${this.baseUrl}${this.state.query}`;
-
 		axios.get(url).then((response) => {
 			this.setState({
 				item: response.data
@@ -66,13 +100,6 @@ class Search extends Component {
 	render(){
 		return(
 			<div className='search'>
-    <style>{`
-      body > div,
-      body > div > div,
-      body > div > div > div.search {
-        height: 100%;
-      }
-    `}</style>
     <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
       <Grid.Column style={{ maxWidth: 450 }}>
       <h1 className='title'>Search for your favorite restaurant!</h1>
@@ -81,6 +108,7 @@ class Search extends Component {
 			<Form.Button content='Search'/>   
 		</Form>	      
 		<Item item={this.state.item}/>
+		<Suggestions results={this.state.results} />
       </Grid.Column>
       </Grid>
       </div>
@@ -89,5 +117,7 @@ class Search extends Component {
 	}
 
 }
+
+
 
 export default Search
