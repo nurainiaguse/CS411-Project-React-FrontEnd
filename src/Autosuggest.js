@@ -39,7 +39,7 @@ export default class SearchSuggest extends Component {
     setTimeout(() => {
       if (this.state.value.length < 1) return this.resetComponent()
 
-      let url = 'http://localhost:5000/api/restaurant/' + this.state.value;
+      let url = 'http://dwzhong2.web.illinois.edu/api/restaurant/' + this.state.value;
 
       axios.get(url).then((response) => {
         // const map1 = response.data.map(x => JSON.parse(x));
