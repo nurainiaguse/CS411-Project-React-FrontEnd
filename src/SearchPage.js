@@ -8,7 +8,6 @@ Header,
 import SearchSuggest from './Autosuggest.js';
 import RiskGraph from './RiskGraph.js'
 import Zipcodevis from './Zipcodevis.js'
-import Background from './Pics/DSCF1660.JPG'
 
 function Message(props){
 	if (props.error){
