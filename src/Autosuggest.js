@@ -18,7 +18,11 @@ export default class SearchSuggest extends Component {
     });
 
   onClickHandler = (e, { result }) => {
-    let url = 'http://localhost:5000/api/license/' + this.state.license;
+    if (this.state.license === 0){
+      this.props.onSearchHandler([])
+      return
+    }
+    let url = 'http://dwzhong2.web.illinois.edu/api/license/' + this.state.license;
     axios.get(url).then((response) => {
         // const map1 = response.data.map(x => JSON.parse(x));
         console.log("response from api", response.data)
@@ -34,7 +38,7 @@ export default class SearchSuggest extends Component {
   }
 
   handleSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, value }, console.log("value:",this.state.value))
+    this.setState({ license: 0, isLoading: true, value }, console.log("value:",this.state.value))
 
     setTimeout(() => {
       if (this.state.value.length < 1) return this.resetComponent()
@@ -59,8 +63,9 @@ export default class SearchSuggest extends Component {
 
     return (
       <Grid>
-        <Grid.Column width={6}>
+        <Grid.Column>
           <Search
+            aligned='center'
             loading={isLoading}
             onResultSelect={this.handleResultSelect}
             onSearchChange={_.debounce(this.handleSearchChange, 500, {
@@ -68,11 +73,12 @@ export default class SearchSuggest extends Component {
             })}
             results={results}
             value={value}
+            fluid='true'
             {...this.props}
           />
-          <Form onSubmit={this.onClickHandler}>      
-      <Form.Button content='Search'/>   
-    </Form> 
+          <Form onSubmit={this.onClickHandler} style={{padding: '2em 0em'}}>      
+            <Form.Button content='Search'/>   
+          </Form> 
         </Grid.Column>
       
       </Grid>
