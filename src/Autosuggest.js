@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Search, Grid, Header, Segment, Form } from "semantic-ui-react";
 
 
-export default class SearchSuggest extends Component {
+class SearchSuggest extends Component {
   componentWillMount() {
     this.resetComponent();
   }
@@ -19,21 +19,19 @@ export default class SearchSuggest extends Component {
 
   onClickHandler = (e, { result }) => {
     if (this.state.license === 0){
-      this.props.onSearchHandler([])
+      this.props.onSearchHandler([], 0)
       return
     }
     let url = 'http://dwzhong2.web.illinois.edu/api/license/' + this.state.license;
     axios.get(url).then((response) => {
         // const map1 = response.data.map(x => JSON.parse(x));
-        console.log("response from api", response.data)
-        this.props.onSearchHandler(response.data)
+        this.props.onSearchHandler(response.data, this.state.license)
       }).catch((error) => {
         console.log(error);
       });
   }
 
   handleResultSelect = (e, { result }) =>{
-    console.log("result select", result, result.key)
     this.setState({ value: result.title, license: result.key, results: [result]});
   }
 
@@ -85,3 +83,5 @@ export default class SearchSuggest extends Component {
     );
   }
 }
+
+export default SearchSuggest

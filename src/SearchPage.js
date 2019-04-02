@@ -4,10 +4,13 @@ import {
 Container,
 Segment,
 Header,
+Menu,
 } from 'semantic-ui-react'
 import SearchSuggest from './Autosuggest.js';
-import RiskGraph from './RiskGraph.js'
-import Zipcodevis from './Zipcodevis.js'
+import Restaurant from './RestaurantInfo/Restaurant.js'
+import { Link } from 'react-router-dom'
+
+import {search as SPCss, searchsegment, searchheader as SPHeader} from './searchpage.module.scss'
 
 function Message(props){
 	if (props.error){
@@ -25,16 +28,16 @@ class SearchPage extends Component{
 		super(props);
 
 		this.state = {
-			graphvisible: false,
+			visible: false,
 			item: [],
-			error: false
+			error: false,
+			license:0
 		}
-		// this.inputChangeHandler = this.inputChangeHandler.bind(this);
 		this.onSearchHandler = this.onSearchHandler.bind(this);
 	}
 
-	onSearchHandler(item){
-		console.log("onsearchhandler item", item)
+	onSearchHandler(item, license){
+		console.log("onsearchhandler item", item, license)
 		if (item.length === 0){
 			this.setState({
 				error:true
@@ -42,28 +45,28 @@ class SearchPage extends Component{
 		}
 		else{
 			this.setState({
-				graphvisible: true,
+				visible: true,
 				item: item,
-				error:false
+				error:false,
+				license: license
 			})
 		}
 	}
-
+ 
 	render(){
 		return (
-			<Container>
-				<Segment style={{padding: '8em 0em'}} vertical textAlign='center'>
-					<Header as='h1'>Search for your favorite restaurant!</Header>
-					<SearchSuggest onSearchHandler={(item) => this.onSearchHandler(item)}/>
+			<div className={SPCss}>
+				<Segment vertical className={searchsegment}>
+					<h1 className={SPHeader}>Search for your favorite restaurant!</h1>
+					<SearchSuggest  onSearchHandler={(item, license) => this.onSearchHandler(item, license)}/>
+					<Message error={this.state.error}/>
 				</Segment>
-				<Message error={this.state.error}/>
-	<RiskGraph visible={this.state.graphvisible} data={[{
-        "name": "Ruby",
-        "year": "2012",
-        "count": "18117"
-    }]}/>
-    <Zipcodevis/>
-	</Container>
+				<div>
+				{ this.state.visible ? <Restaurant name="test" license={this.state.license}/> : null }
+	    		
+	    	</div>
+
+			</div>
 	)
 	}
 	
